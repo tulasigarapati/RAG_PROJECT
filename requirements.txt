@@ -1,7 +1,9 @@
 Flask
+Authlib
+huggingface_hub
+pypdf
 langchain
 chromadb
-pypdf
 sentence-transformers
 faiss-cpu
 python-dotenv
