@@ -129,9 +129,9 @@ def login():
 
 @app.route("/google_login")
 def google_login():
-
+    
     return google.authorize_redirect(
-        "http://127.0.0.1:5000/google_callback"
+        "https://rag-project-1mz4.onrender.com/google_callback"
     )
 
 
