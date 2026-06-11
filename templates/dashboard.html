@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RAG AI Assistant</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',filename='css/dashboard.css') }}">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <a href="/new_chat"
+    style="
+    display:block;
+    background:#4CAF50;
+    color:white;
+    text-decoration:none;
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
+    margin-bottom:15px;">
+    🆕 New Chat
+    </a>
+    <h4>Total PDFs : {{ pdfs|length }}</h4>
+    <h2>
+        👋 Welcome {{ username }}
+    </h2>
+    <div class="logo">
+        🤖 RAG AI
+    </div>
+
+    <div style="margin-top:25px;"></div>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+
+        <label class="upload">
+
+            <input
+            type="file"
+            name="pdf"
+            multiple
+            hidden
+            onchange="this.form.submit()">
+
+            📄 Upload PDF
+
+        </label>
+
+    </form>
+
+    <div class="pdf-list">
+        <h3>Documents</h3>
+        <ul>
+            {% for pdf in pdfs %}
+            <li>
+                📄 {{ pdf }}
+                <a href="/delete_pdf/{{ pdf }}"
+                style="color:red; text-decoration:none; float:right;">
+                🗑️
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h3>💬 Chat History</h3>
+    <div class="history">
+        {% for c in conversations %}
+        <div style="display:flex;align-items:center;margin-bottom:8px;">
+            <a href="/chat/{{ c[0] }}"
+            style="flex:1;text-decoration:none;">
+            <div style="
+            background:#2c2c54;
+            color:white;
+            padding:10px;
+            border-radius:8px;">
+
+            💬 {{ c[1] }}
+            </div>
+            </a>
+            <a href="/delete_chat/{{ c[0] }}"
+            style="
+            margin-left:8px;
+            color:red;
+            text-decoration:none;
+            font-size:18px;">
+            🗑️
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="logout">
+    <a href="/logout">
+    🚪 Logout
+    </a>
+
+</div>
+
+
+</div>
+
+<div class="main">
+
+    <div class="navbar">
+
+        <h2>Chat with your PDF</h2>
+
+        <div style="
+        margin-left:auto;
+        padding-right:20px;">
+
+            👤 {{ username }}
+
+        </div>
+
+    </div>
+
+    <div class="chat-area">
+
+        {% if history|length == 0 %}
+
+        <div class="bot">
+
+            👋 Hello {{ username }}
+
+            <br><br>
+
+            Upload PDF and ask anything.
+
+        </div>
+
+        {% endif %}
+
+        {% for q,a in history %}
+
+        <div class="user">
+
+            {{ q }}
+
+        </div>
+
+        <div class="bot">
+
+            🤖 {{ a }}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="input-area">
+
+        <form action="/ask"
+        method="POST"
+        style="display:flex;width:100%;">
+
+            <input
+            type="text"
+            name="question"
+            placeholder="Ask anything..."
+            required>
+
+            <button>
+
+                ➤
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

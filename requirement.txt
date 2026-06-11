@@ -1,0 +1,7 @@
+Flask
+langchain
+chromadb
+pypdf
+sentence-transformers
+faiss-cpu
+python-dotenv
