@@ -1,12 +1,10 @@
 import os
 from pypdf import PdfReader
 from huggingface_hub import InferenceClient
-
-# HF Token ni environment variable nundi read chestundi
-HF_TOKEN = os.getenv("HF_TOKEN")
+from pypdf import PdfReader
 
 client = InferenceClient(
-    HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+    token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 )
 
 def ask_pdf(question):
@@ -32,6 +30,7 @@ def ask_pdf(question):
 
     if pdf_text.strip() == "":
         return "No readable text found in uploaded PDF."
+
     prompt = f"""
 You are a RAG AI Assistant.
 
@@ -49,12 +48,12 @@ PDF:
 
 Question:
 {question}
-"""    
+"""
 
     try:
 
         response = client.chat.completions.create(
-    model="Qwen/Qwen2.5-7B-Instruct",
+            model="Qwen/Qwen2.5-7B-Instruct",
             messages=[
                 {
                     "role": "user",
@@ -67,5 +66,4 @@ Question:
         return response.choices[0].message.content
 
     except Exception as e:
-
         return str(e)
