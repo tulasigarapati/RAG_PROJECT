@@ -1,11 +1,12 @@
 import os
 from pypdf import PdfReader
 from huggingface_hub import InferenceClient
-from pypdf import PdfReader
+
 
 client = InferenceClient(
     token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
 )
+
 
 def ask_pdf(question):
 
@@ -15,6 +16,7 @@ def ask_pdf(question):
     if not os.path.exists(pdf_folder):
         return "Uploads folder not found."
 
+    # Read PDFs
     for file in os.listdir(pdf_folder):
 
         if file.endswith(".pdf"):
@@ -23,27 +25,34 @@ def ask_pdf(question):
 
             for page in reader.pages:
 
-                page_text = page.extract_text()
+                text = page.extract_text()
 
-                if page_text:
-                    pdf_text += page_text + "\n"
+                if text:
+                    pdf_text += text + "\n"
 
     if pdf_text.strip() == "":
-        return "No readable text found in uploaded PDF."
+        return "No readable text found."
+
+    # -------- LIMIT CONTEXT SIZE --------
+    MAX_CHARS = 12000
+
+    if len(pdf_text) > MAX_CHARS:
+        pdf_text = pdf_text[:MAX_CHARS]
+    # -----------------------------------
 
     prompt = f"""
-You are a RAG AI Assistant.
+You are an AI assistant.
 
-Answer ONLY from the uploaded PDF.
+Answer ONLY using the PDF content below.
 
-If answer exists:
-- Give only 3-5 lines.
-- Don't copy the whole paragraph.
+If the answer is present:
+- Answer in 3-5 lines.
+- Summarize, don't copy large paragraphs.
 
-If answer doesn't exist:
+If the answer is not present:
 Answer not found in uploaded PDF.
 
-PDF:
+PDF Content:
 {pdf_text}
 
 Question:
