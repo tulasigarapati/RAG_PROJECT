@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session
+from flask import url_for
 from authlib.integrations.flask_client import OAuth
 from werkzeug.utils import secure_filename
 from rag import ask_pdf
@@ -24,9 +25,7 @@ google = oauth.register(
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
     client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-    client_kwargs={
-        "scope": "openid email profile"
-    }
+    client_kwargs={"scope": "openid email profile"}
 )
 
 conn = sqlite3.connect("database/users.db")
@@ -129,9 +128,9 @@ def login():
 
 @app.route("/google_login")
 def google_login():
-    
+
     return google.authorize_redirect(
-        "https://rag-project-1mz4.onrender.com/google_callback"
+        url_for("google_callback", _external=True)
     )
 
 
