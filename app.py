@@ -130,7 +130,7 @@ def login():
 def google_login():
 
     return google.authorize_redirect(
-        url_for("google_callback", _external=True)
+         "https://rag-project-1mz4.onrender.com/google_callback"
     )
 
 
